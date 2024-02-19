@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String    @unique @default(uuid())
+  user_name   String    @unique
+  email       String    @unique
+  created_at  DateTime  @default(now())
+  last_access DateTime?
+  task        Task[]
+
+  @@map("user")
+}
+
+model Task {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  done        Boolean
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id])
+
+  @@map("task")
+}
